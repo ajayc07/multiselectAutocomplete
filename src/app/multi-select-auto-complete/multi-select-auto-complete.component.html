@@ -1,0 +1,52 @@
+<div class="component-container">
+
+    <mat-form-field>
+
+        <mat-chip-list #chipList *ngIf = "multiSelection">
+            <mat-chip
+              *ngFor="let cData of chipData"
+              [selectable]="selectable"
+              [removable]="removable"
+              (removed)="remove(cData)"
+              >
+              {{cData[displayDataAttr]}}
+              <!-- <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon> -->
+              <span class="close-btn" matChipRemove *ngIf="removable">X</span>
+            </mat-chip>
+
+            <input #searchInputEl matInput placeholder={{placeholder}} 
+                [matAutocomplete]="auto" 
+                [formControl]="searchInput"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="addOnBlur"
+            >
+            
+        </mat-chip-list>
+
+            <input  *ngIf = "!multiSelection" #searchInputEl matInput 
+            placeholder={{placeholder}} 
+            [matAutocomplete]="auto" 
+            [formControl]="searchInput">
+
+            <button *ngIf="!multiSelection && searchInput.value" matSuffix (click) = "searchInput.setValue('')">
+                <!-- <mat-icon>close</mat-icon> -->
+                <span>X</span>
+            </button>
+
+
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selected($event)">
+            
+            <mat-option *ngIf="isLoading && loaderMsg">{{loaderMsg}}</mat-option>
+            
+            <ng-container *ngIf="!isLoading">
+                <mat-option *ngFor="let data of filterData" [value]="data">
+                    <span>{{data[displayDataAttr]}}</span>
+                </mat-option>
+            </ng-container>
+
+        </mat-autocomplete>
+
+    </mat-form-field>
+  
+  </div>
