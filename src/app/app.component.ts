@@ -39,7 +39,7 @@ export class AppComponent {
 
   public getMovieDataOnFilter(searchValue: any): void {
     this.isLoading = true;
-    let apiUrl = "http://www.omdbapi.com/?apikey=17a0e150&s=";
+    let apiUrl = "https://www.omdbapi.com/?apikey=17a0e150&s=";
     this.http.get(apiUrl + searchValue)
       .pipe( finalize(() => {
                 this.isLoading = false
