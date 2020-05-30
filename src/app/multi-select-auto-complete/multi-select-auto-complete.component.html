@@ -12,6 +12,7 @@
               {{cData[displayDataAttr]}}
               <!-- <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon> -->
               <span class="close-btn" matChipRemove *ngIf="removable">X</span>
+              <!-- <button mat-icon-button class="close-btn" *ngIf="removable">X</button> -->
             </mat-chip>
 
             <input #searchInputEl matInput placeholder={{placeholder}} 
@@ -20,6 +21,7 @@
                 [matChipInputFor]="chipList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 [matChipInputAddOnBlur]="addOnBlur"
+                (blur) = "inputBlured($event)"
             >
             
         </mat-chip-list>
@@ -27,9 +29,11 @@
             <input  *ngIf = "!multiSelection" #searchInputEl matInput 
             placeholder={{placeholder}} 
             [matAutocomplete]="auto" 
-            [formControl]="searchInput">
+            [formControl]="searchInput"
+            (blur) = "inputBlured($event)"
+            >
 
-            <button *ngIf="!multiSelection && searchInput.value" matSuffix (click) = "searchInput.setValue('')">
+            <button mat-icon-button *ngIf="!multiSelection && searchInput.value" matSuffix (click) = "searchInput.setValue('')">
                 <!-- <mat-icon>close</mat-icon> -->
                 <span>X</span>
             </button>

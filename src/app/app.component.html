@@ -1,29 +1,59 @@
-<div class="comps">
-      
-    <multi-select-auto-complete 
-    [placeholder]= "'Search for a movie'"
-    [filterData]= "filteredResult"
-    [displayDataAttr] = "'Title'"
-    [dataValueAttr] = "'imdbID'"
-    [isLoading] = "isLoading"
-    [loaderMsg] = "'Loading...'"
-    [multiSelection] = "multiSelection"
-    (searchKeyEmitter) = "getMovieDataOnFilter($event)"
-    [formControl]="movieSelection"
-    > 
-  
-    </multi-select-auto-complete>
-</div>
+<div class="demo-container">
 
-<div class="output">
-    <h1>Selected Item in parent Component</h1>
+  <h2>Configuration of multi select component in parent component: </h2>
+  <div class="configuration">
+    <div class="multi-selection">
+      <mat-button-toggle-group value="single" #group="matButtonToggleGroup">
+        <mat-button-toggle *ngFor="let item of toggleOptions;" (change)="selectionChanged($event)" [value]="item">
+          {{item | titlecase}}</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <div class="placeholder">
+      <mat-form-field class="example-full-width">
+        <mat-label>Configure placeholder</mat-label>
+        <input matInput placeholder="Search for a movie" [(ngModel)]="inputPlaceholder">
+      </mat-form-field>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="comps">
+    <h2>Multi/single auto-complete selection component </h2>
+    <multi-select-auto-complete [placeholder]="inputPlaceholder" [filterData]="filteredResult"
+      [displayDataAttr]="'Title'" [dataValueAttr]="'imdbID'" [isLoading]="isLoading" [loaderMsg]="'Loading...'"
+      [multiSelection]="multiSelection" (searchKeyEmitter)="getMovieDataOnFilter($event)"
+      [formControl]="movieSelection">
+    </multi-select-auto-complete>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <h2>Multi/single auto complete selection as form control</h2>
+  <div class="config-summary">
+    <h3>Multiple: {{multiSelection}}</h3>
+    <h3>Control dirty: {{movieSelection.dirty}}</h3>
+    <h3>
+      <mat-checkbox (change)="updateDisableState($event)" [(ngModel)]="disableField">Control Disable:</mat-checkbox> {{movieSelection.disabled}}
+    </h3>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="output">
+    <h2>Retrived selected item in parent component</h2>
     <div *ngIf="multiSelection">
-        <div *ngFor="let selection of selectedFilter">
-          {{selection.Title}}
-        </div>
+      <li *ngFor="let selection of movieSelection?.value">
+        {{selection.Title}}
+      </li>
     </div>
 
     <div *ngIf="!multiSelection">
-      {{selectedFilter?.Title}}
+      <div>{{movieSelection?.value?.Title}}</div>
     </div>
+  </div>
+
+
+
 </div>

@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, 
 import { FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { debounceTime, tap } from 'rxjs/operators';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
@@ -46,23 +45,9 @@ export class MultiSelectAutoCompleteComponent implements ControlValueAccessor {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   public searchInput = new FormControl();
   public chipData = [];
+  public disabled: boolean;
 
   constructor() { }
-
-  onChange: any = () => { };
-  onTouched: any = () => { };
-
-  registerOnChange( fn : any ) : void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched( fn : any ) : void {
-    this.onTouched = fn;
-  }
-
-  writeValue(value) {
-    this.searchInput.setValue(value);
-  }
 
   ngOnInit(): void {
     this.handleInputChanges();
@@ -89,8 +74,10 @@ export class MultiSelectAutoCompleteComponent implements ControlValueAccessor {
     this.searchInput.valueChanges.pipe(
       debounceTime(500)
     ).subscribe(() => {
-      if(this.searchInput.value) {
+      if(typeof this.searchInput.value == 'string' && this.searchInput.value) {
         this.searchKeyEmitter.emit(this.searchInput.value);
+      } else if (!this.searchInput.value) {
+        this.filterData = [];
       }
     })
      
@@ -133,8 +120,37 @@ export class MultiSelectAutoCompleteComponent implements ControlValueAccessor {
       this.searchInput.updateValueAndValidity();
     }
 
-    this.registerOnChange(this.multiSelection ? this.chipData : event.option.value);
-    // this.filterSelectionEmitter.emit(this.multiSelection ? this.chipData : event.option.value)
+    this.onChange(this.multiSelection ? this.chipData : event.option.value);
+  }
+
+
+  public inputBlured(event) : void {
+    if (event.target.value && !this.filterData?.length) {
+      this.searchInput.reset();
+      this.searchInputEl.nativeElement.value = '';
+    }
+  }
+
+  /**
+   * ControlValueAccessor registration function
+   */
+  onChange: (event) => void;
+  onTouched: () => void;
+
+  registerOnChange( fn : any ) : void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched( fn : any ) : void {
+    this.onTouched = fn;
+  }
+
+  writeValue(value) {
+    this.searchInput.setValue(value);
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    isDisabled ? this.searchInput.disable() : this.searchInput.enable();
   }
 
 

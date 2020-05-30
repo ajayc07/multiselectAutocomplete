@@ -1,7 +1,20 @@
-.output {
-    background-color:  cornsilk;
-}
+// .config-summary {
+// }
 
 .comps {
+    background-color:  cornsilk;
     width: 50%;
+    margin-top: 24px;
+}
+
+.demo-container {
+    padding: 24px;
+
+    .configuration {
+        display: flex;
+    }
+
+    div {
+        margin-right: 24px;
+    }
 }

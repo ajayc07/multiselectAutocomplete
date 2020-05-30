@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 import { debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
@@ -11,20 +11,30 @@ import { debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 })
 export class AppComponent {
 
-  movieSelection = new FormControl();
+  movieSelection = new FormControl('',[Validators.required]);
   filteredResult: any;
   isLoading = false;
   errorMsg: string;
   multiSelection = false;
-
   selectedFilter: any;
+  toggleOptions: Array<String> = ["single", "multiple"];
+  inputPlaceholder= 'Search for a movie';
+  disableField= false;
 
   constructor (
     private http: HttpClient
   ) { }
 
   ngOnInit() {
-    this.getSelectedFilter();
+    // this.getSelectedFilter();
+  }
+
+  updateDisableState(event) {
+    (event.checked) ? this.movieSelection.disable() : this.movieSelection.enable();
+  }
+
+  selectionChanged(item) {
+    this.multiSelection = item.value === 'multiple' ? true : false;
   }
 
   public getMovieDataOnFilter(searchValue: any): void {
@@ -41,9 +51,4 @@ export class AppComponent {
   }
 
 
-  public getSelectedFilter() {
-    this.movieSelection.valueChanges.pipe().subscribe((value) => {
-      console.log('yoshaa', value);
-    })
-  }
 }
